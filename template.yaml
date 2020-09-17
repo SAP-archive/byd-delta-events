@@ -23,6 +23,18 @@ Resources:
           Properties:
             Path: /hello
             Method: get
+  GetBydObjectsFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: get-byd-objects/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        GetBydObject:
+          Type: Api 
+          Properties:
+            Path: /bydObject
+            Method: get
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
@@ -37,3 +49,14 @@ Outputs:
   HelloWorldFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt HelloWorldFunctionRole.Arn
+
+  GetBydObjectsdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/bydObject/"
+  GetBydObjectsFunction:
+    Description: "Get ByD Objects Function ARN"
+    Value: !GetAtt GetBydObjectsFunction.Arn
+  GetBydObjectsFunctionIamRole:
+    Description: "Get ByD Objects Function"
+    Value: !GetAtt GetBydObjectsFunctionRole.Arn
+

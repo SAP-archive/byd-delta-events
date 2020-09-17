@@ -21,6 +21,18 @@ Resources:
           Properties:
             Path: /hello
             Method: get
+  GetBydObjectsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetBydObjectsFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        GetBydObject:
+          Type: Api
+          Properties:
+            Path: /bydObject
+            Method: get
 Outputs:
   HelloWorldApi:
     Description: API Gateway endpoint URL for Prod stage for Hello World function
@@ -37,4 +49,20 @@ Outputs:
     Value:
       Fn::GetAtt:
       - HelloWorldFunctionRole
+      - Arn
+  GetBydObjectsdApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/bydObject/
+  GetBydObjectsFunction:
+    Description: Get ByD Objects Function ARN
+    Value:
+      Fn::GetAtt:
+      - GetBydObjectsFunction
+      - Arn
+  GetBydObjectsFunctionIamRole:
+    Description: Get ByD Objects Function
+    Value:
+      Fn::GetAtt:
+      - GetBydObjectsFunctionRole
       - Arn
