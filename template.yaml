@@ -17,6 +17,10 @@ Resources:
       CodeUri: get-byd-objects/
       Handler: app.lambdaHandler
       Runtime: nodejs12.x
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the UserSessionTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventConfigTable
       Events:
         GetBydObject:
           Type: Api 
@@ -28,6 +32,20 @@ Resources:
           BYD_ODATA: "https://myXXXXX.sapbydesign.com/sap/byd/odata/cust/v1"
           BYD_AUTH: "Base64 user:password"
           BYD_SALES: "/khsalesorder/SalesOrderCollection"
+          CONFIG_ID: 0
+
+# DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
+  EventConfigTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: EventConfigTable
+      PrimaryKey:
+        Name: configId
+        Type: Integer
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
