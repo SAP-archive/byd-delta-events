@@ -41,7 +41,7 @@ Resources:
       TableName: EventConfigTable
       PrimaryKey:
         Name: configId
-        Type: Integer
+        Type: Number
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
