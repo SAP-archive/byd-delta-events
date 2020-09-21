@@ -24,11 +24,16 @@ exports.lambdaHandler = async (event, context) => {
                 // location: ret.data.trim()
             })
         }
+
+        console.log("Lambda Called")
+        console.log(event)
+        console.log(context)
+
+
     } catch (err) {
         console.log(err);
         return err;
     }
-
     return response
 };
 

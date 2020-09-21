@@ -23,7 +23,11 @@ Resources:
           Properties:
             Path: /bydObject
             Method: get
-
+      Environment:
+        Variables:
+          BYD_ODATA: "https://myXXXXX.sapbydesign.com/sap/byd/odata/cust/v1"
+          BYD_AUTH: "Base64 user:password"
+          BYD_SALES: "/khsalesorder/SalesOrderCollection"
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
