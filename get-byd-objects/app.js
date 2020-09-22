@@ -27,20 +27,19 @@ const dynamo = new AWS.DynamoDB();
 
 exports.lambdaHandler = async (event, context) => {
     try {
-
-       await getConfig().then(function(data){
+        response = {'statusCode': 200,'body': JSON.stringify({message: 'get ByD objects Started'})}
+        await getConfig()
+        .then(function(data){
             console.log(data)
-            response = {'statusCode': 200,'body': JSON.stringify({message: 'get ByD objects'})}
-            return response
-        }).catch((error) => {
+        })
+        .catch((error) => {
             console.error(error.step)
             console.error(error.mess)
-            return error;    
         });
     } catch (err) {
         console.log(err);
-        return err;
     }
+    return response
 };
 
 let getConfig = function(){
@@ -49,9 +48,8 @@ let getConfig = function(){
             Key: { configId: { "N": process.env.CONFIG_ID}},
             TableName: process.env.CONFIG_TABLE,
         }; 
-
-        console.log("Getting config from DybamoDB")
-
+        
+        console.log("Getting run config from DybamoDB")
         dynamo.getItem(params).promise()
         .then(function(data){
             console.log("Back from dynamo")
@@ -61,7 +59,6 @@ let getConfig = function(){
             console.error("error from dynamo"+ error)
             reject(manageErrorStep("Loading Condiguration", error))
         })
-        console.log("terminou")
     })
 }
 

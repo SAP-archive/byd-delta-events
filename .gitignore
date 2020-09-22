@@ -132,3 +132,4 @@ samconfig.toml
 .aws-sam/build/
 .aws-sam/build/template.yaml
 
+.vscode/launch.json
