@@ -32,7 +32,9 @@ Resources:
           BYD_ODATA: "https://myXXXXX.sapbydesign.com/sap/byd/odata/cust/v1"
           BYD_AUTH: "Base64 user:password"
           BYD_SALES: "/khsalesorder/SalesOrderCollection"
+          CONFIG_TABLE: !Ref EventConfigTable
           CONFIG_ID: 0
+
 
 # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
   EventConfigTable:
