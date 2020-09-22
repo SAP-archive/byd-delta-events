@@ -6,6 +6,6 @@ aws dynamodb create-table \
         AttributeName=configId,KeyType=HASH \
 --provisioned-throughput \
         ReadCapacityUnits=10,WriteCapacityUnits=5 \
---endpoint-url http://localhost:8000
-aws dynamodb put-item --table-name EventConfigTable --item '{"configId": {"N": "0"}, "lastRun": {"S": "1600531647000"}}' --endpoint-url http://localhost:8000
+--endpoint-url http://docker.for.mac.localhost:8000
+aws dynamodb put-item --table-name EventConfigTable --item '{"configId": {"N": "0"}, "lastRun": {"S": "Tuesday, 20 September 2020 19:27:37"}}' --endpoint-url http://localhost:8000
 aws dynamodb scan --table-name EventConfigTable --endpoint-url http://localhost:8000

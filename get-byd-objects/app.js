@@ -27,42 +27,73 @@ const dynamo = new AWS.DynamoDB();
 
 exports.lambdaHandler = async (event, context) => {
     try {
+        //Default Response
         response = {'statusCode': 200,'body': JSON.stringify({message: 'get ByD objects Started'})}
-        await getConfig()
-        .then(function(data){
-            console.log(data)
-        })
-        .catch((error) => {
-            console.error(error.step)
-            console.error(error.mess)
-        });
+        
+        const data  = await getConfig()
+        console.log("Config Loaded")
+        console.log(data)
+
+        await Promise.all([getSalesInvoices(data.lastRun.S),getAccounts(data.lastRun.S)]).then((values) => {
+            console.log(values[0]);
+            console.log(values[1]);
+          });
+
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        return response
+
     }
     return response
 };
 
 let getConfig = function(){
+    // Returns Configuration Record from DynamoDB
     return new Promise(function (resolve, reject) {
         const params = {
             Key: { configId: { "N": process.env.CONFIG_ID}},
             TableName: process.env.CONFIG_TABLE,
         }; 
-        
         console.log("Getting run config from DybamoDB")
+
+        //Workaround while local Dynamo isn't ready
+        if(process.env.AWS_SAM_LOCAL){
+            var response = { Item: { lastRun: { S: 'Tuesday, 20 September 2020 19:27:37'}, configId: { N: '0' } } }
+            resolve(response.Item)
+        }
+
         dynamo.getItem(params).promise()
         .then(function(data){
             console.log("Back from dynamo")
-            resolve(data)
+            resolve(data.Item)
         })
         .catch(function(error){
             console.error("error from dynamo"+ error)
-            reject(manageErrorStep("Loading Condiguration", error))
+            reject( new Error("Error Loading Condiguration! - " + error))
         })
     })
 }
 
-function manageErrorStep(step, mess){
-    const managedError = {"step": step, "mess": mess}
-    return manageErrorStep
+
+let getSalesInvoices = function(lastRun){
+    return new Promise(function (resolve, reject){ 
+        console.log("Retrieving ByD Sales Invoices") 
+=        resolve("ByD Sales Retrieved from "+ lastRun)
+    })
+}
+
+let getAccounts = function(lastRun){
+    // Returns Configuration Record from DynamoDB
+    return new Promise(function (resolve, reject){ 
+        console.log("Retrieving ByD Accounts") 
+        resolve("ByD Accounts Retrieved from "+ lastRun)
+    })
+}
+
+let updateLastRun = function(lastRun){
+    // Returns Configuration Record from DynamoDB
+    return new Promise(function (resolve, reject){ 
+        console.log("Updating Last Run on DynamoDB") 
+        resolve()
+    })
 }
