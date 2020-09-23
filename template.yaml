@@ -11,6 +11,7 @@ Globals:
     Timeout: 10
 
 Resources:
+  #Gets ByD Delta
   GetBydObjectsFunction:
     Type: AWS::Serverless::Function 
     Properties:
@@ -41,6 +42,21 @@ Resources:
           #AWS Details
           CONFIG_TABLE: !Ref EventConfigTable
           CONFIG_ID: 0
+  #Tweet an Event
+  TweetByDEvent:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: tweet-byd-event/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+  
+  #Send event to SCP
+  PublishEventSCP:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: publish-event-scp/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
 
 
   # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
