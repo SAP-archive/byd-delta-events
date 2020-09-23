@@ -24,19 +24,35 @@ exports.lambdaHandler = async (event, context) => {
         //Retrieve configuration from DynamoDB
         const data  = await getConfig()
         console.log("Config Loaded from DynamoDB")
+        
+        //Add more objeects if needed
+        bydObjectsPromises = [getSalesInvoices(data.lastRun.S), getCustomers(data.lastRun.S)]
 
         //Retrieve delta from ByD Objects
-        await Promise.all([getSalesInvoices(data.lastRun.S),getCustomers(data.lastRun.S)]).then((bydData) => {
+        await Promise.all(bydObjectsPromises).then((bydData) => {
             
+            var SNSMessages = []
+            
+            //Prepare all SNS promises calls
             bydData.forEach(function(object){
                 if(object[0]){
-                    console.log("SHOWING DATA FOR " + object[0].GenericType)
-                    object.forEach(function(instance){
-                    console.log(instance)
-                    //TODO - Send it to SNS
-                })
+                    console.log("PREPARING MESSAGE FOR " + object[0].GenericType)
+                    object.forEach(async function(instance){
+                        var params = {Message: JSON.stringify(instance), TopicArn: process.env.SNS_TOPIC};
+                        SNSMessages.push(new AWS.SNS().publish(params).promise())
+                    })
                 }
             })
+            
+            console.log("CALLING PROMISES ALL")
+            await Promise.all(SNSMessages).then(() =>{
+                console.log("All mensagens sent!")
+            })
+            .catch((e) => {
+                console.error("Error sending messages")
+                console.error(e)
+            })
+
           });
 
     } catch (err) {
@@ -200,3 +216,30 @@ function BydTimestampToHumanDate(bydDate){
     }
     
 }
+
+
+let publishSNSMessage = (message) => {
+    return new Promise((resolve, reject) => {
+      // Create publish parameters
+      var params = {Message: JSON.stringify(message), TopicArn: process.env.SNS_TOPIC};
+      // Create promise and SNS service object
+      var publishTextPromise = new AWS.SNS().publish(params).promise();
+  
+      console.log("Publishing Message: "+params.Message)
+      publishTextPromise.then(
+        function (data) {
+          console.log(`Message ${data.MessageId} send sent to the topic ${params.TopicArn}`);
+          resolve()
+        })
+        .catch((err) => {
+          console.error("Cant send message to to SNS");
+          console.error(err, err.stack);
+          reject()
+        });
+      
+        
+    
+    
+    
+    })
+  }

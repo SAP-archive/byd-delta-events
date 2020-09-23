@@ -22,6 +22,8 @@ Resources:
         # Give Create/Read/Update/Delete Permissions to the UserSessionTable
         - DynamoDBCrudPolicy:
             TableName: !Ref EventConfigTable
+        - SNSPublishMessagePolicy:
+            TopicName: "*"
       Events:
         GetBydObject:
           Type: Api 
@@ -42,6 +44,7 @@ Resources:
           #AWS Details
           CONFIG_TABLE: !Ref EventConfigTable
           CONFIG_ID: 0
+          SNS_TOPIC: !Ref BydEventTopic
   #Tweet an Event
   TweetByDEvent:
     Type: AWS::Serverless::Function 
@@ -70,7 +73,19 @@ Resources:
         - Protocol: lambda
           Endpoint: !GetAtt PublishEventSCP.Arn
 
-
+  TweetByDEventInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref TweetByDEvent
+      Principal: sns.amazonaws.com   
+  
+  PublishEventSCPInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref PublishEventSCP
+      Principal: sns.amazonaws.com   
 
   # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
   EventConfigTable:
