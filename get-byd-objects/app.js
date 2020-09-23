@@ -98,10 +98,13 @@ let getSalesInvoices = function(lastRun){
 
 
 let getCustomers = function(lastRun){
-    // Returns Accounts from BYD
+    // Returns Customers from BYD
     return new Promise(function (resolve, reject){ 
         console.log("Retrieving ByD Customers") 
-        resolve("ByD Customers Retrieved from "+ lastRun)
+        getBydObject(lastRun, process.env.BYD_CUSTOMERS,process.env.BYD_CUSTOMERS_ID).then((data) =>{
+            console.log("Customers RETRIEVED")
+            resolve(data)
+        })
     })
 }
 
@@ -122,8 +125,7 @@ let getBydObject = function(lastRun, endpoint, idAttribute, additionalAttributes
         var params = new URLSearchParams({
             "$format":"json",
             "$select":idAttribute+",ObjectID,CreationDateTime,LastChangeDateTime",
-            // "$filter":"CreationDateTime ge datetimeoffset" +quotes(lastRun),
-            "$filter":"LastChangeDateTime ge datetimeoffset" +quotes(lastRun)+" or LastChangeDateTime ge datetimeoffset"+quotes(lastRun)
+            "$filter":"LastChangeDateTime ge datetimeoffset" +quotes(lastRun)
         })
 
         const options = {
@@ -148,8 +150,18 @@ let getBydObject = function(lastRun, endpoint, idAttribute, additionalAttributes
               new Error(`${response.statusCode}: ${response.req.getHeader("host")} ${response.req.path}`)
             );
           }else{
-            console.debug(`Data ${JSON.stringify(response.data)}`)
-            return resolve(response.data)
+            
+            var  formatedData = []
+            response.data.d.results.forEach(function(elem){
+                element = formatData(elem,idAttribute, additionalAttributes)
+                console.log(element)
+                if(element){
+                    formatedData.push(element)
+                }
+            })
+            
+            // console.debug(`Data ${JSON.stringify(formatedData)}`)
+            return resolve(formatedData)
           }
         })
         .catch((err) => {
@@ -163,4 +175,36 @@ function quotes(val){
     return "%27" + val + "%27";
 }
 
+function formatData(elem,idAttribute,additionalAttributes){
+    try{
+        const updated = elem.CreationDateTime==elem.LastChangeDateTime?false:true //If dates are the same the item was created
+        var element = elem
+        element.genericId = elem[idAttribute]
+        element.updated = updated
+        element.genericType = elem.__metadata.type.split('.')[1]
+        element.dateStr = updated?BydTimestampToHumanDate(elem.LastChangeDateTime):BydTimestampToHumanDate(elem.CreationDateTime)
+        delete element['__metadata']
+        return element
+    }
+    catch(error){
+        console.error("Error formating data")
+        console.error(error)
+        return null
 
+    }
+}
+
+function BydTimestampToHumanDate(bydDate){
+
+    try{
+        //DateFormat is /Date(1600183555000)/
+        const timestamp = bydDate.substring(bydDate.lastIndexOf("(") + 1, bydDate.lastIndexOf(")"));
+        const humanDate = new Date(timestamp*1)
+        return humanDate
+    }catch(error){
+        console.error("Error formating date to human readable")
+        console.error(error)
+        return null
+    }
+    
+}

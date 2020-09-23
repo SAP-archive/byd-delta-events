@@ -31,8 +31,8 @@ Resources:
         Variables:
           #CHANGE to real system details
           #ByD Details
-          BYD_ODATA: "https://myXXXXXX.sapbydesign.com/sap/byd/odata/cust/v1"
-          BYD_AUTH: "base64 user:password"
+          BYD_ODATA: "https://my343094.sapbydesign.com/sap/byd/odata/cust/v1"
+          BYD_AUTH: "QWRtaW5pc3RyYXRpb24wMTpXZWxjb21lMTAx"
           BYD_INVOICES: "/khcustomerinvoice/CustomerInvoiceCollection"
           BYD_INVOICES_ID: "ID"
           BYD_CUSTOMERS: "/khcustomer/CustomerCollection"
