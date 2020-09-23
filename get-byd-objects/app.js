@@ -1,19 +1,3 @@
-// const url = 'http://checkip.amazonaws.com/';
-let response;
-
-/**
- *
- * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
- * @param {Object} event - API Gateway Lambda Proxy Input Format
- *
- * Context doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html 
- * @param {Object} context
- *
- * Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
- * @returns {Object} object - API Gateway Lambda Proxy Output Format
- * 
-*/
-
 const AWS = require("aws-sdk");
 const thisRunDate = new Date()
 const axios = require('axios')
@@ -28,27 +12,36 @@ if(process.env.AWS_SAM_LOCAL){
 const dynamo = new AWS.DynamoDB();
 
 exports.lambdaHandler = async (event, context) => {
+    const response = {
+        'statusCode': 200,
+        'body': JSON.stringify({message: 'get ByD objects Started'})
+    }
     try {
         // Default Response. This is an asynchronous function. 
         // caller do not wait for it to finish processing
-        response = {
-            'statusCode': 200,
-            'body': JSON.stringify({message: 'get ByD objects Started'})
-        }
+       
         
         //Retrieve configuration from DynamoDB
         const data  = await getConfig()
         console.log("Config Loaded from DynamoDB")
 
         //Retrieve delta from ByD Objects
-        await Promise.all([getSalesInvoices(data.lastRun.S),getCustomers(data.lastRun.S)]).then((values) => {
-            console.log(values[0]);
-            console.log(values[1]);
+        await Promise.all([getSalesInvoices(data.lastRun.S),getCustomers(data.lastRun.S)]).then((bydData) => {
+            
+            bydData.forEach(function(object){
+                if(object[0]){
+                    console.log("SHOWING DATA FOR " + object[0].genericType)
+                    object.forEach(function(instance){
+                    console.log(instance)
+                    //TODO - Send it to SNS
+                })
+                }
+            })
           });
 
     } catch (err) {
         console.error(err);
-        return response
+        return null
 
     }
     return response
@@ -150,11 +143,10 @@ let getBydObject = function(lastRun, endpoint, idAttribute, additionalAttributes
               new Error(`${response.statusCode}: ${response.req.getHeader("host")} ${response.req.path}`)
             );
           }else{
-            
+            console.log("Formatting output")
             var  formatedData = []
             response.data.d.results.forEach(function(elem){
                 element = formatData(elem,idAttribute, additionalAttributes)
-                console.log(element)
                 if(element){
                     formatedData.push(element)
                 }
