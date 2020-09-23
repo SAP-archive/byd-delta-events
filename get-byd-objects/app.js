@@ -35,9 +35,9 @@ exports.lambdaHandler = async (event, context) => {
 =        await Promise.all(geyBydObjectsPromises)   //Retrieve delta from ByD Objects
             .then(prepareSnsPromises)               //Prepare msgs for publishing
             .then(publishSNSMessage)                //Publish Messages
+            .then(updateLastRun)
             .then(() => {
                 console.log("All done!!")
-                //TODO Implement Update LastRun on DynamoDB
             });
     } catch (err) {
         console.error(err);
@@ -48,7 +48,6 @@ exports.lambdaHandler = async (event, context) => {
 let getConfig = function () {
     // Returns Configuration Record from DynamoDB
     return new Promise(function (resolve, reject) {
-
         const params = {
             Key: {
                 configId: {
@@ -106,14 +105,6 @@ let getCustomers = function (lastRun) {
             console.log("Customers RETRIEVED")
             resolve(data)
         })
-    })
-}
-
-let updateLastRun = function (lastRun) {
-    // Returns Configuration Record from DynamoDB
-    return new Promise(function (resolve, reject) {
-        console.log("Updating Last Run on DynamoDB")
-        resolve()
     })
 }
 
@@ -246,5 +237,14 @@ let publishSNSMessage = (SNSMessages) => {
                 console.error(e)
                 reject()
             })
+    })
+}
+
+let updateLastRun = function (lastRun) {
+    // Update DynamoDB with the Date of the Last Run
+    return new Promise(function (resolve, reject) {
+        console.log("Updating Last Run on DynamoDB")
+        //TODO Implement this part
+        resolve()
     })
 }
