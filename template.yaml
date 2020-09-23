@@ -29,14 +29,19 @@ Resources:
             Method: get
       Environment:
         Variables:
+          #CHANGE to real system details
+          #ByD Details
           BYD_ODATA: "https://myXXXXX.sapbydesign.com/sap/byd/odata/cust/v1"
           BYD_AUTH: "Base64 user:password"
-          BYD_SALES: "/khsalesorder/SalesOrderCollection"
+          BYD_INVOICES: "/khcustomerinvoice/CustomerInvoiceCollection"
+          BYD_CUSTOMERS: "/khcustomer/CustomerCollection"
+          
+          #AWS Details
           CONFIG_TABLE: !Ref EventConfigTable
           CONFIG_ID: 0
 
 
-# DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
+  # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
   EventConfigTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
