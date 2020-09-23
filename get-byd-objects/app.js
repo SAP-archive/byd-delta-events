@@ -27,13 +27,18 @@ const dynamo = new AWS.DynamoDB();
 
 exports.lambdaHandler = async (event, context) => {
     try {
-        //Default Response
-        response = {'statusCode': 200,'body': JSON.stringify({message: 'get ByD objects Started'})}
+        // Default Response. This is an asynchronous function. 
+        // caller do not wait for it to finish processing
+        response = {
+            'statusCode': 200,
+            'body': JSON.stringify({message: 'get ByD objects Started'})
+        }
         
+        //Retrieve configuration from DynamoDB
         const data  = await getConfig()
-        console.log("Config Loaded")
-        console.log(data)
+        console.log("Config Loaded from DynamoDB")
 
+        //Retrieve delta from ByD Objects
         await Promise.all([getSalesInvoices(data.lastRun.S),getAccounts(data.lastRun.S)]).then((values) => {
             console.log(values[0]);
             console.log(values[1]);
@@ -50,40 +55,43 @@ exports.lambdaHandler = async (event, context) => {
 let getConfig = function(){
     // Returns Configuration Record from DynamoDB
     return new Promise(function (resolve, reject) {
+        
         const params = {
             Key: { configId: { "N": process.env.CONFIG_ID}},
             TableName: process.env.CONFIG_TABLE,
         }; 
-        console.log("Getting run config from DybamoDB")
 
-        //Workaround while local Dynamo isn't ready
+        //Workaround while LOCAL Dynamo isn't ready
         if(process.env.AWS_SAM_LOCAL){
-            var response = { Item: { lastRun: { S: 'Tuesday, 20 September 2020 19:27:37'}, configId: { N: '0' } } }
+            var response = { Item: {
+                                lastRun: { S: 'Tuesday, 20 September 2020 19:27:37'},
+                                configId: { N: '0' } 
+                            }}
             resolve(response.Item)
         }
 
         dynamo.getItem(params).promise()
         .then(function(data){
-            console.log("Back from dynamo")
             resolve(data.Item)
         })
         .catch(function(error){
-            console.error("error from dynamo"+ error)
+            console.error("error loading from dynamo"+ error)
             reject( new Error("Error Loading Condiguration! - " + error))
         })
     })
 }
 
-
 let getSalesInvoices = function(lastRun){
+    // Returns Invoices from ByD
     return new Promise(function (resolve, reject){ 
-        console.log("Retrieving ByD Sales Invoices") 
-=        resolve("ByD Sales Retrieved from "+ lastRun)
+        console.log("Retrieving ByD Invoices") 
+        resolve("ByD Invoices Retrieved from "+ lastRun)
     })
 }
 
+
 let getAccounts = function(lastRun){
-    // Returns Configuration Record from DynamoDB
+    // Returns Accounts from BYD
     return new Promise(function (resolve, reject){ 
         console.log("Retrieving ByD Accounts") 
         resolve("ByD Accounts Retrieved from "+ lastRun)
