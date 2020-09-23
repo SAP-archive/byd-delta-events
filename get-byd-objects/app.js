@@ -30,7 +30,7 @@ exports.lambdaHandler = async (event, context) => {
             
             bydData.forEach(function(object){
                 if(object[0]){
-                    console.log("SHOWING DATA FOR " + object[0].genericType)
+                    console.log("SHOWING DATA FOR " + object[0].GenericType)
                     object.forEach(function(instance){
                     console.log(instance)
                     //TODO - Send it to SNS
@@ -171,10 +171,10 @@ function formatData(elem,idAttribute,additionalAttributes){
     try{
         const updated = elem.CreationDateTime==elem.LastChangeDateTime?false:true //If dates are the same the item was created
         var element = elem
-        element.genericId = elem[idAttribute]
-        element.updated = updated
-        element.genericType = elem.__metadata.type.split('.')[1]
-        element.dateStr = updated?BydTimestampToHumanDate(elem.LastChangeDateTime):BydTimestampToHumanDate(elem.CreationDateTime)
+        element.GenericId = elem[idAttribute]
+        element.Updated = updated
+        element.GenericType = elem.__metadata.type.split('.')[1]
+        element.DateStr = updated?BydTimestampToHumanDate(elem.LastChangeDateTime):BydTimestampToHumanDate(elem.CreationDateTime)
         delete element['__metadata']
         return element
     }
