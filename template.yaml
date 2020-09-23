@@ -58,6 +58,19 @@ Resources:
       Handler: app.lambdaHandler
       Runtime: nodejs12.x
 
+  #SNS Topic to handle Lambda Calls
+  BydEventTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: 'byd-event-topic'
+      TopicName:  'byd-event'
+      Subscription:
+        - Protocol: lambda
+          Endpoint: !GetAtt TweetByDEvent.Arn
+        - Protocol: lambda
+          Endpoint: !GetAtt PublishEventSCP.Arn
+
+
 
   # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
   EventConfigTable:
