@@ -1,4 +1,3 @@
-// const axios = require('axios')
 // const url = 'http://checkip.amazonaws.com/';
 let response;
 
@@ -16,6 +15,9 @@ let response;
 */
 
 const AWS = require("aws-sdk");
+const thisRunDate = new Date()
+const axios = require('axios')
+
 
 if(process.env.AWS_SAM_LOCAL){
     // To use local DynamoDB
@@ -39,7 +41,7 @@ exports.lambdaHandler = async (event, context) => {
         console.log("Config Loaded from DynamoDB")
 
         //Retrieve delta from ByD Objects
-        await Promise.all([getSalesInvoices(data.lastRun.S),getAccounts(data.lastRun.S)]).then((values) => {
+        await Promise.all([getSalesInvoices(data.lastRun.S),getCustomers(data.lastRun.S)]).then((values) => {
             console.log(values[0]);
             console.log(values[1]);
           });
@@ -64,7 +66,7 @@ let getConfig = function(){
         //Workaround while LOCAL Dynamo isn't ready
         if(process.env.AWS_SAM_LOCAL){
             var response = { Item: {
-                                lastRun: { S: 'Tuesday, 20 September 2020 19:27:37'},
+                                lastRun: { S: '2020-09-13T09:31:06.393Z'},
                                 configId: { N: '0' } 
                             }}
             resolve(response.Item)
@@ -85,16 +87,21 @@ let getSalesInvoices = function(lastRun){
     // Returns Invoices from ByD
     return new Promise(function (resolve, reject){ 
         console.log("Retrieving ByD Invoices") 
-        resolve("ByD Invoices Retrieved from "+ lastRun)
+
+        getBydObject(lastRun, process.env.BYD_INVOICES,process.env.BYD_INVOICES_ID).then((data) =>{
+            console.log("INVOICES RETRIEVED")
+            resolve(data)
+        })
+
     })
 }
 
 
-let getAccounts = function(lastRun){
+let getCustomers = function(lastRun){
     // Returns Accounts from BYD
     return new Promise(function (resolve, reject){ 
-        console.log("Retrieving ByD Accounts") 
-        resolve("ByD Accounts Retrieved from "+ lastRun)
+        console.log("Retrieving ByD Customers") 
+        resolve("ByD Customers Retrieved from "+ lastRun)
     })
 }
 
@@ -105,3 +112,55 @@ let updateLastRun = function(lastRun){
         resolve()
     })
 }
+
+let getBydObject = function(lastRun, endpoint, idAttribute, additionalAttributes){
+    return new Promise(function (resolve, reject){ 
+        
+        console.log("Retriving ByD Objects")
+        console.log("Preparing request to "+endpoint)
+
+        var params = new URLSearchParams({
+            "$format":"json",
+            "$select":idAttribute+",ObjectID,CreationDateTime,LastChangeDateTime",
+            // "$filter":"CreationDateTime ge datetimeoffset" +quotes(lastRun),
+            "$filter":"LastChangeDateTime ge datetimeoffset" +quotes(lastRun)+" or LastChangeDateTime ge datetimeoffset"+quotes(lastRun)
+        })
+
+        const options = {
+                method: "GET",
+                baseURL: process.env.BYD_ODATA,
+                url: endpoint,
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic " + process.env.BYD_AUTH,
+                    "x-csrf-token": "fetch"
+                },
+                params:params
+        }
+
+        console.log(options)
+
+        axios.request(options).then((response) => {
+          console.log(`ByD Response: is ${response.status} - ${response.statusText}`)
+          if (response.statusCode < 200 || response.statusCode >= 300) {
+            return reject(
+              new Error(`${response.statusCode}: ${response.req.getHeader("host")} ${response.req.path}`)
+            );
+          }else{
+            console.debug(`Data ${JSON.stringify(response.data)}`)
+            return resolve(response.data)
+          }
+        })
+        .catch((err) => {
+          console.error("Error calling ByD -" + err)
+          reject(new Error(err));
+        })       
+    })
+}
+
+function quotes(val){
+    return "%27" + val + "%27";
+}
+
+

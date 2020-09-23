@@ -31,10 +31,12 @@ Resources:
         Variables:
           #CHANGE to real system details
           #ByD Details
-          BYD_ODATA: "https://myXXXXX.sapbydesign.com/sap/byd/odata/cust/v1"
-          BYD_AUTH: "Base64 user:password"
+          BYD_ODATA: "https://myXXXXXX.sapbydesign.com/sap/byd/odata/cust/v1"
+          BYD_AUTH: "base64 user:password"
           BYD_INVOICES: "/khcustomerinvoice/CustomerInvoiceCollection"
+          BYD_INVOICES_ID: "ID"
           BYD_CUSTOMERS: "/khcustomer/CustomerCollection"
+          BYD_CUSTOMERS_ID: "InternalID"
           
           #AWS Details
           CONFIG_TABLE: !Ref EventConfigTable
