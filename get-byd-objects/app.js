@@ -25,6 +25,7 @@ exports.lambdaHandler = async (event, context) => {
     }
     try {
         //Retrieve configuration from DynamoDB
+        thisRunDate = new Date(Date.now()).toISOString()
         const data = await getConfig()
         console.log("Config Loaded from DynamoDB")
 
