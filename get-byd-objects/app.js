@@ -237,7 +237,7 @@ let publishSNSMessage = (SNSMessages) => {
     })
 }
 
-let updateLastRun = function (lastRun) {
+let updateLastRun = function () {
     // Update DynamoDB with the Date of the Last Run
     return new Promise(function (resolve, reject) {
         const params = {
@@ -252,11 +252,11 @@ let updateLastRun = function (lastRun) {
             TableName: process.env.CONFIG_TABLE,
         };
 
-        console.log("Updaring LastRun on Dynamo")
+        console.log("Updating LastRun on Dynamo")
 
         dynamo.putItem(params).promise()
             .then(function (data) {
-                console.log("Last Run updated on DynamoDB ")
+                console.log("Last Run updated on DynamoDB " + thisRunDate)
                 resolve()
             })
             .catch(function (error) {
