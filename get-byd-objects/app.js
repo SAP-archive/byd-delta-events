@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const thisRunDate = new Date()
+const thisRunDate = new Date(Date.now()).toISOString()
 const axios = require('axios')
 
 
@@ -32,7 +32,7 @@ exports.lambdaHandler = async (event, context) => {
         const geyBydObjectsPromises = [ getSalesInvoices(data.lastRun.S), 
                                         getCustomers(data.lastRun.S)]
 
-=        await Promise.all(geyBydObjectsPromises)   //Retrieve delta from ByD Objects
+        await Promise.all(geyBydObjectsPromises)   //Retrieve delta from ByD Objects
             .then(prepareSnsPromises)               //Prepare msgs for publishing
             .then(publishSNSMessage)                //Publish Messages
             .then(updateLastRun)
@@ -243,8 +243,26 @@ let publishSNSMessage = (SNSMessages) => {
 let updateLastRun = function (lastRun) {
     // Update DynamoDB with the Date of the Last Run
     return new Promise(function (resolve, reject) {
-        console.log("Updating Last Run on DynamoDB")
-        //TODO Implement this part
-        resolve()
+        const params = {
+            Item: {
+                configId: {
+                    "N": process.env.CONFIG_ID
+                },
+                lastRun: {
+                    "S": thisRunDate
+                }
+            },
+            TableName: process.env.CONFIG_TABLE,
+        };
+
+        dynamo.putItem(params).promise()
+            .then(function (data) {
+                console.log("Last Run updated on DynamoDB "+ lastRun)
+                resolve()
+            })
+            .catch(function (error) {
+                console.error("error storing last run on DynamoDB" + error)
+                reject(new Error(error))
+            })
     })
 }
