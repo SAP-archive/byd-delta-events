@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const thisRunDate = new Date(Date.now()).toISOString()
+var thisRunDate = new Date(Date.now()).toISOString()
 const axios = require('axios')
 
 
