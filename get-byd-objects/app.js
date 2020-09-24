@@ -89,7 +89,7 @@ let getSalesInvoices = function (lastRun) {
         console.log("Retrieving ByD Invoices")
 
         getBydObject(lastRun, process.env.BYD_INVOICES, process.env.BYD_INVOICES_ID).then((data) => {
-            console.log("INVOICES RETRIEVED")
+            console.log(data.length + "Invoices Retrieved")
             resolve(data)
         })
 
@@ -102,7 +102,7 @@ let getCustomers = function (lastRun) {
     return new Promise(function (resolve, reject) {
         console.log("Retrieving ByD Customers")
         getBydObject(lastRun, process.env.BYD_CUSTOMERS, process.env.BYD_CUSTOMERS_ID).then((data) => {
-            console.log("Customers RETRIEVED")
+            console.log(data.length + "Customers Retrieved")
             resolve(data)
         })
     })
@@ -111,9 +111,7 @@ let getCustomers = function (lastRun) {
 let getBydObject = function (lastRun, endpoint, idAttribute, additionalAttributes) {
     return new Promise(function (resolve, reject) {
 
-        console.log("Retriving ByD Objects")
         console.log("Preparing request to " + endpoint)
-
         var params = new URLSearchParams({
             "$format": "json",
             "$select": idAttribute + ",ObjectID,CreationDateTime,LastChangeDateTime",
@@ -133,7 +131,7 @@ let getBydObject = function (lastRun, endpoint, idAttribute, additionalAttribute
             params: params
         }
 
-        console.log(options)
+        // console.debug(options)
 
         axios.request(options).then((response) => {
                 console.log(`ByD Response: is ${response.status} - ${response.statusText}`)
@@ -142,7 +140,6 @@ let getBydObject = function (lastRun, endpoint, idAttribute, additionalAttribute
                         new Error(`${response.statusCode}: ${response.req.getHeader("host")} ${response.req.path}`)
                     );
                 } else {
-                    console.log("Formatting output")
                     var formatedData = []
                     response.data.d.results.forEach(function (elem) {
                         element = formatData(elem, idAttribute, additionalAttributes)
@@ -207,7 +204,7 @@ let prepareSnsPromises = (bydData) => {
         //Prepare all SNS promises calls
         bydData.forEach(function (object) {
             if (object[0]) {
-                console.log("PREPARING MESSAGE FOR " + object[0].GenericType)
+                console.log("Preparing messages for " + object[0].GenericType)
                 object.forEach(function (instance) {
                     var params = {
                         Message: JSON.stringify(instance),
@@ -255,9 +252,11 @@ let updateLastRun = function (lastRun) {
             TableName: process.env.CONFIG_TABLE,
         };
 
+        console.log("Updaring LastRun on Dynamo")
+
         dynamo.putItem(params).promise()
             .then(function (data) {
-                console.log("Last Run updated on DynamoDB "+ lastRun)
+                console.log("Last Run updated on DynamoDB ")
                 resolve()
             })
             .catch(function (error) {
