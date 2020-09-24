@@ -52,7 +52,14 @@ Resources:
       CodeUri: tweet-byd-event/
       Handler: app.lambdaHandler
       Runtime: nodejs12.x
-  
+      Environment:
+        Variables:
+          #TWITTER KEYS
+          TWITER_API_KEY: "ToZroIdOPwedkEyHrgGcdG1PT"
+          TWITTER_SECRET_KEY: "zV9BoDxILqjo1s0r9LSNh9GFwsf9BaLx0miz732AsvpO2sMvZj"
+          TWITTER_ACCESS_TOKEN: "1308817741609086976-JaC8zwD9dRLSClKWtO5y2cIQM7nUJW"
+          TWITTER_TOKEN_SECRET: "szCVwodS5r3wiNS6qZ9HoXfYEccQAzbTyKsCQE3WeTcSe"
+
   #Send event to SCP
   PublishEventSCP:
     Type: AWS::Serverless::Function 
