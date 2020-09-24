@@ -29,7 +29,7 @@ function prepareTweet(message) {
         var parserMessage = JSON.parse(message)
         var tweet = `${parserMessage.GenericType} - ${parserMessage.GenericId} ` +
             `was ${parserMessage.Updated?"updated":"created"} ` +
-            `on our system @ ${parserMessage.DateStr} #KeepTheCoreClean`
+            `on our system @ ${parserMessage.DateStr}. Keep the core clean 😎`
         console.log(tweet)
         return tweet
 
