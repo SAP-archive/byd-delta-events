@@ -66,6 +66,12 @@ Resources:
       CodeUri: publish-event-scp/
       Handler: app.lambdaHandler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          SCP_EM_URL: "https://iotdev.authentication.eu10.hana.ondemand.com"
+          SCP_EM_AUTH_ENDPOINT: "/oauth/token"
+          #Enconde client_id:client_secret of SCP Enterprise Messaging
+          SCP_EM_AUTHORIZATION: "c2ItZGVmYXVsdC0xNTFmYTk1Zi02NDYwLTQ2MWYtODZhOS0wMDQwNzNlZTgwOTEtY2xvbmUhYjExNzM3fHhiZW0tc2VydmljZS1icm9rZXItIWIyNDM2OjYxY2Q4YTVmLTE3MTUtNDI5Ni1hNzQ2LTJhMWI2ZWIwMThkZiRwQ2tadEFyWHdWcmNBX0hXLUFYT2F6ZHdTU0g3d3dkN2czLUFuOGxJOVA0PQ=="
   #SNS Topic to handle Lambda Calls
   BydEventTopic:
     Type: AWS::SNS::Topic
