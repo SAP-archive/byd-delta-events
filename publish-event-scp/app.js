@@ -4,12 +4,22 @@
 const axios = require("axios")
 
 exports.lambdaHandler = async (event, context) => {
-    const message = 'Lets send this to SCP';
 
     const token = await getEmToken()
-    const msgPublished = await publishMsgSCP(token)
 
-    return message;
+    const localMsg= {
+        ObjectID: '00163E71D7E21EEABF9A8DD263CAF2B0',
+        ID: '1INV-12-2020',
+        CreationDateTime: '/Date(1600779993000)/',
+        LastChangeDateTime: '/Date(1600779993000)/',
+        GenericId: '1INV-12-2020',
+        Updated: false,
+        GenericType: 'CustomerInvoice',
+        DateStr: "2020-09-22T13:06:33.000Z"
+      }
+
+    await publishMsgSCP(token, process.env.AWS_SAM_LOCAL?localMsg:event.Records[0].Sns.Message)
+    return ;
 
 }
 
@@ -30,7 +40,6 @@ let getEmToken = function () {
             headers: {
                 "Content-Type": " application/x-www-form-urlencoded",
                 "Authorization": "Basic " + process.env.SCP_EM_AUTHORIZATION
-
             },
             params: params
         }
@@ -59,8 +68,7 @@ let getEmToken = function () {
     })
 }
 
-
-let publishMsgSCP = function (token) {
+let publishMsgSCP = function (token,msg) {
     return new Promise(function (resolve, reject) {
         console.log("Preparing request to SCP Messaging")
 
@@ -73,7 +81,7 @@ let publishMsgSCP = function (token) {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
-            data: {message:"Alo alo SCP. Aqui quem fala é a Lambda"}
+            data: msg
         }
 
         console.log("REQUEST TO PUBLISH Message")
@@ -88,7 +96,7 @@ let publishMsgSCP = function (token) {
                     );
                 } else {
                     console.log("Message Published o SCP")
-                    return resolve()
+                    return resolve(true)
                 }
             })
             .catch((err) => {
