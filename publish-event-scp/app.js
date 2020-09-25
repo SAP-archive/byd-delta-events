@@ -70,7 +70,7 @@ let publishMsgSCP = function (token) {
             url:  process.env.SCP_EM_PUB_ENDPOINT,
             headers: {
                 "x-qos": 0,
-                "Content-Type": "text/plain",
+                "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
             data: {message:"Alo alo SCP. Aqui quem fala é a Lambda"}
