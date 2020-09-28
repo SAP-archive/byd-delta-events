@@ -40,6 +40,8 @@ Resources:
           BYD_INVOICES_ID: "ID"
           BYD_CUSTOMERS: "/khcustomer/CustomerCollection"
           BYD_CUSTOMERS_ID: "InternalID"
+          BYD_SALESORDERS: "/khsalesorder/SalesOrderCollection"
+          BYD_SALESORDERS_ID: "ID"
           
           #AWS Details
           CONFIG_TABLE: !Ref EventConfigTable

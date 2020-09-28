@@ -31,7 +31,8 @@ exports.lambdaHandler = async (event, context) => {
 
         //Add more objects if needed
         const geyBydObjectsPromises = [ getSalesInvoices(data.lastRun.S), 
-                                        getCustomers(data.lastRun.S)]
+                                        getCustomers(data.lastRun.S),
+                                        getSalesOrders(data.lastRun.S)]
 
         await Promise.all(geyBydObjectsPromises)   //Retrieve delta from ByD Objects
             .then(prepareSnsPromises)               //Prepare msgs for publishing
@@ -104,6 +105,17 @@ let getCustomers = function (lastRun) {
         console.log("Retrieving ByD Customers")
         getBydObject(lastRun, process.env.BYD_CUSTOMERS, process.env.BYD_CUSTOMERS_ID).then((data) => {
             console.log(data.length + "Customers Retrieved")
+            resolve(data)
+        })
+    })
+}
+
+let getSalesOrders = function (lastRun) {
+    // Returns Customers from BYD
+    return new Promise(function (resolve, reject) {
+        console.log("Retrieving ByD Sales Orders")
+        getBydObject(lastRun, process.env.BYD_SALESORDERS, process.env.BYD_SALESORDERS_ID).then((data) => {
+            console.log(data.length + "ByD Sales Orders Retrieved")
             resolve(data)
         })
     })
