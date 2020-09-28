@@ -30,11 +30,11 @@ exports.lambdaHandler = async (event, context) => {
         console.log("Config Loaded from DynamoDB")
 
         //Add more objects if needed
-        const geyBydObjectsPromises = [ getSalesInvoices(data.lastRun.S), 
-                                        getCustomers(data.lastRun.S),
-                                        getSalesOrders(data.lastRun.S)]
+        const getBydObjectsPromises = [ SalesInvoices(data.lastRun.S), 
+                                        Customers(data.lastRun.S),
+                                        SalesOrders(data.lastRun.S)]
 
-        await Promise.all(geyBydObjectsPromises)   //Retrieve delta from ByD Objects
+        await Promise.all(getBydObjectsPromises)   //Retrieve delta from ByD Objects
             .then(prepareSnsPromises)               //Prepare msgs for publishing
             .then(publishSNSMessage)                //Publish Messages
             .then(updateLastRun)
@@ -85,7 +85,7 @@ let getConfig = function () {
     })
 }
 
-let getSalesInvoices = function (lastRun) {
+let SalesInvoices = function (lastRun) {
     // Returns Invoices from ByD
     return new Promise(function (resolve, reject) {
         console.log("Retrieving ByD Invoices")
@@ -99,7 +99,7 @@ let getSalesInvoices = function (lastRun) {
 }
 
 
-let getCustomers = function (lastRun) {
+let Customers = function (lastRun) {
     // Returns Customers from BYD
     return new Promise(function (resolve, reject) {
         console.log("Retrieving ByD Customers")
@@ -110,7 +110,7 @@ let getCustomers = function (lastRun) {
     })
 }
 
-let getSalesOrders = function (lastRun) {
+let SalesOrders = function (lastRun) {
     // Returns Customers from BYD
     return new Promise(function (resolve, reject) {
         console.log("Retrieving ByD Sales Orders")
