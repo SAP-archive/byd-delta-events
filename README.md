@@ -34,7 +34,7 @@ You can easily enhance this solution to support more SAP Business ByDesign objec
           #ByD Details
           BYD_ODATA: "https://my000000.sapbydesign.com/sap/byd/odata/cust/v1"
           BYD_AUTH: "user:password base64 encoded"
-          BYS_NEWOBJECT: "/newObject/newObjectCollection"
+          BYD_NEWOBJECT: "/newObject/newObjectCollection"
           BYD_NEWOBJECT_ID: "ID"
 ```
 2 - Create a new promise to invoke the new object service in the [get-byd-objects](get-byd-objects/app.js) function:
@@ -42,7 +42,7 @@ You can easily enhance this solution to support more SAP Business ByDesign objec
 let NewObject = function (lastRun) {
     return new Promise(function (resolve, reject) {
         console.log("Retrieving ByD New Objects")
-        getBydObject(lastRun, process.env.BYS_NEWOBJECT, process.env.BYD_NEWOBJECT_ID).then((data) => {
+        getBydObject(lastRun, process.env.BYD_NEWOBJECT, process.env.BYD_NEWOBJECT_ID).then((data) => {
             console.log(data.length + "ByD New Objects Retrieved")
             resolve(data)
         })
@@ -58,6 +58,7 @@ let NewObject = function (lastRun) {
                                         ServiceOrders(data.lastRun.S),
                                         NewObject(data.lastRun.S)]
 ```
+A practical example in [this commit](https://github.com/B1SA/byd-delta-events/commit/a26171a14fae53d9982bacf3b6005f892eb034c0)
 ### Adding new Subscribers
 
 ## License
