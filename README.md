@@ -61,6 +61,8 @@ let NewObject = function (lastRun) {
 A practical example in [this commit](https://github.com/B1SA/byd-delta-events/commit/a26171a14fae53d9982bacf3b6005f892eb034c0)
 ### Adding new Subscribers
 
+TODO
+
 ## License
 This proof of concept is is released under the terms of the MIT license. See [LICENSE](LICENSE) for more information or see https://opensource.org/licenses/MIT.
  
