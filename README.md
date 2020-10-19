@@ -61,6 +61,7 @@ const getBydObjectsPromises = [ SalesInvoices(data.lastRun.S),
 A practical example in [this commit](https://github.com/B1SA/byd-delta-events/commit/a26171a14fae53d9982bacf3b6005f892eb034c0)
 ### Adding new Subscribers
 To add a new subscriber to to the notification system, do the following on the [template.yaml](template.yaml) file:
+
 1 - Add the new subscriber details (in this case a new Lambda Function)
 ```yaml
   #New Subscriber Function
@@ -92,7 +93,10 @@ To add a new subscriber to to the notification system, do the following on the [
       Principal: sns.amazonaws.com   
 ```
 An example of those changes [can be found in here](https://github.com/B1SA/byd-delta-events/commit/2141568ce4e21bbddbdf60426d2297b6a98194b9)
-The last step is to implement the New Subscriber's function as shown on [this commit](https://github.com/B1SA/byd-delta-events/commit/3b3c05dc19ea721cbc95885a83e593bdacb46eab)
+
+4 - The last step is to implement the New Subscriber's function as shown on [this commit](https://github.com/B1SA/byd-delta-events/commit/3b3c05dc19ea721cbc95885a83e593bdacb46eab)
+
+5 - Redeploy the app
 
 
 ## License
