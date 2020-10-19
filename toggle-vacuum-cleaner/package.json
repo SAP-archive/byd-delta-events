@@ -1,0 +1,14 @@
+{
+  "name": "toggle-vacuum-cleaner",
+  "version": "1.0.0",
+  "description": "toggles a vacuum cleaner on/off",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.20.0"
+  }
+}
