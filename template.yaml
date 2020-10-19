@@ -73,6 +73,18 @@ Resources:
           SCP_EM_AUTHORIZATION: "IT WILL BE A VERY LONG STRING"
           SCP_EM_PUB_URL: "https://enterprise-messaging-pubsub.cfapps.eu10.hana.ondemand.com"
           SCP_EM_PUB_ENDPOINT: "ENDPOINT FOR SCP PUBSUB"
+  #Function Toggle Vacuum ON/OFF
+  ToggleVacuumCleaner:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: toggle-vacuum-cleaner/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          #SCP Authentication Details
+          WEBHOOK_BASE: "https://maker.ifttt.com"
+          WEBHOOK_ENDPOINT: "/trigger/ServiceOrder/with/key/<YOUR_KEY>"
 
   #SNS Topic to handle Lambda Calls
   BydEventTopic:
@@ -85,6 +97,8 @@ Resources:
           Endpoint: !GetAtt TweetByDEvent.Arn
         - Protocol: lambda
           Endpoint: !GetAtt PublishEventSCP.Arn
+        - Protocol: lambda
+          Endpoint: !GetAtt ToggleVacuumCleaner.Arn
   
   TweetByDEventInvokePermission:
     Type: 'AWS::Lambda::Permission'
@@ -98,6 +112,13 @@ Resources:
     Properties:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref PublishEventSCP
+      Principal: sns.amazonaws.com   
+  
+  ToggleVacuumCleanerInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref ToggleVacuumCleaner
       Principal: sns.amazonaws.com   
 
   # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
