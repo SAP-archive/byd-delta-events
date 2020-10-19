@@ -52,16 +52,48 @@ let NewObject = function (lastRun) {
 
 3 - Add the call for the NewObject promise to the [getBydObjectsPromises](get-byd-objects/app.js#L33) array
 ```javascript
-        const getBydObjectsPromises = [ SalesInvoices(data.lastRun.S), 
-                                        Customers(data.lastRun.S),
-                                        SalesOrders(data.lastRun.S),
-                                        ServiceOrders(data.lastRun.S),
-                                        NewObject(data.lastRun.S)]
+const getBydObjectsPromises = [ SalesInvoices(data.lastRun.S), 
+                                Customers(data.lastRun.S),
+                                SalesOrders(data.lastRun.S),
+                                ServiceOrders(data.lastRun.S),
+                                NewObject(data.lastRun.S)]
 ```
 A practical example in [this commit](https://github.com/B1SA/byd-delta-events/commit/a26171a14fae53d9982bacf3b6005f892eb034c0)
 ### Adding new Subscribers
+To add a new subscriber to to the notification system, do the following on the [template.yaml](template.yaml) file:
+1 - Add the new subscriber details (in this case a new Lambda Function)
+```yaml
+  #New Subscriber Function
+  NewSubscriberFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: new-subscriber-function/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+```
+2 - Add the new function as a subscriber to the **existing** SNS topic
+```yaml
+  BydEventTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: 'byd-event-topic'
+      TopicName:  'byd-event'
+      Subscription:
+        - Protocol: lambda
+          Endpoint: !GetAtt NewSubscriberFunction.Arn
+```
+3 - Define a new invoke permission for the new function
+```yaml
+   NewSubscriberFunctionInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref NewSubscriberFunction
+      Principal: sns.amazonaws.com   
+```
+An example of those changes [can be found in here](https://github.com/B1SA/byd-delta-events/commit/2141568ce4e21bbddbdf60426d2297b6a98194b9)
+The last step is to implement the New Subscriber's function as shown on [this commit](https://github.com/B1SA/byd-delta-events/commit/3b3c05dc19ea721cbc95885a83e593bdacb46eab)
 
-TODO
 
 ## License
 This proof of concept is is released under the terms of the MIT license. See [LICENSE](LICENSE) for more information or see https://opensource.org/licenses/MIT.
