@@ -1,10 +1,10 @@
 # A Decoupled Approach for SAP Business ByDesign Event Handling
 [![](https://i.imgur.com/ZGPBj6Y.png)]()
 
-## Overview
+## Description
 This application produces events based on SAP Business ByDesign objects' changes. It works by pulling data, every minute, from OData services and checking if there were changes. It has a serverless, loosely coupled architecture and has been implemented using [AWS Serverless Application Model](https://aws.amazon.com/serverless/sam/).
 
-## Pre requisites
+## Requirments
 * AWS Account (free tier will do it)
 * SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 * SAP Business ByDesign Tenant
