@@ -1,10 +1,10 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: byd-delta-events
-Upstream-Contact: SAP <>
+Upstream-Contact: Ralphive <>
 Source: https://github.com/B1SA/byd-delta-events.git
 
 # Sample paragraph, commented out:
 #
 # Files: src/*
-# Copyright: $YEAR $NAME <$CONTACT>
-# License: ...
+# Copyright: $YEAR SAP SE
+# License: Apache-2.0

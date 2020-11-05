@@ -95,7 +95,7 @@ A practical example of those changes [can be found in here](https://github.com/B
 5 - Redeploy the app
 
 ## License
-This proof of concept is is released under the terms of the MIT license. See [LICENSE](LICENSE) for more information or see https://opensource.org/licenses/MIT.
+This proof of concept is is released under the terms of the APACHE 2.0 license. See [LICENSE](LICENSE) for more information.
  
 ## Support and Contributions
 This repository is provided "as-is". No support is available. Feel free to open issues or provide pull requests.
