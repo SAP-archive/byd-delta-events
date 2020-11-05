@@ -93,10 +93,10 @@ A practical example of those changes [can be found in here](https://github.com/B
 4 - The last step is to implement the New Subscriber's function as shown on [this commit](https://github.com/B1SA/byd-delta-events/commit/3b3c05dc19ea721cbc95885a83e593bdacb46eab)
 
 5 - Redeploy the app
-
-## License
-This proof of concept is is released under the terms of the APACHE 2.0 license. See [LICENSE](LICENSE) for more information.
  
 ## Support and Contributions
 This repository is provided "as-is". No support is available. Feel free to open issues or provide pull requests.
+
+## License
+Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSES/Apache-2.0.txt) file.
 
