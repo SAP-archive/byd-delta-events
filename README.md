@@ -1,3 +1,4 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/byd-delta-events)](https://api.reuse.software/info/github.com/SAP-samples/byd-delta-events)
 # A Decoupled Approach for SAP Business ByDesign Event Handling
 [![](https://i.imgur.com/ZGPBj6Y.png)]()
 
