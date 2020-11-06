@@ -5,6 +5,6 @@ Source: https://github.com/B1SA/byd-delta-events.git
 
 # Sample paragraph, commented out:
 #
-# Files: src/*
-# Copyright: $YEAR SAP SE
-# License: Apache-2.0
+Files: * 
+Copyright: 2020 SAP SE or an SAP affiliate company and byd-delta-events contributors
+License: Apache-2.0
